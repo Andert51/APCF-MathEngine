@@ -1,0 +1,2 @@
+/usr/bin/ar qc libsrc_lib.a CMakeFiles/src_lib.dir/Engine.cpp.o CMakeFiles/src_lib.dir/Renderer.cpp.o CMakeFiles/src_lib.dir/main.cpp.o
+/usr/bin/ranlib libsrc_lib.a
