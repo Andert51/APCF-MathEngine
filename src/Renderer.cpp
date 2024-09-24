@@ -16,10 +16,25 @@ void setupOpenGL()
 
 void renderScene()
 {
-    // Aquí puedes cambiar qué objeto se va a renderizar
-    drawTriangle2D();
-    drawLine2D();
-    drawCube3D();
+    // Este método ahora solo llama a la figura específica según el comando
+    extern std::string currentCommand;
+
+    if (currentCommand == "triangle")
+    {
+        drawTriangle2D();
+    }
+    else if (currentCommand == "line")
+    {
+        drawLine2D();
+    }
+    else if (currentCommand == "cube")
+    {
+        drawCube3D();
+    }
+    else
+    {
+        std::cerr << "No valid object to render" << std::endl;
+    }
 }
 
 void drawTriangle2D()
@@ -60,8 +75,5 @@ void drawCube3D()
     glVertex3f(0.5f, -0.5f, -0.5f);
     glVertex3f(0.5f, 0.5f, -0.5f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
-
-    // Otras caras...
-    // Puedes agregar las otras caras con colores diferentes si lo deseas
     glEnd();
 }
