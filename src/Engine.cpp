@@ -3,34 +3,21 @@
 #include <iostream>
 #include <string>
 
-std::string currentCommand = "triangle"; // Comando por defecto
+std::string currentCommand = "triangle"; // Comando predeterminado
 
 void init()
 {
-    setupOpenGL(); // Inicializa OpenGL
+    setupOpenGL(); // Configurar OpenGL para renderizado
 }
 
-void processCommands(const char *command)
+void processCommands(const std::string &command)
 {
-    std::string input = command;
-
-    if (input == "triangle")
+    if (command == "triangle" || command == "line" || command == "cube")
     {
-        currentCommand = "triangle";
-        std::cout << "Switched to rendering a 2D triangle." << std::endl;
-    }
-    else if (input == "line")
-    {
-        currentCommand = "line";
-        std::cout << "Switched to rendering a 2D line." << std::endl;
-    }
-    else if (input == "cube")
-    {
-        currentCommand = "cube";
-        std::cout << "Switched to rendering a 3D cube." << std::endl;
+        currentCommand = command; // Actualizar el comando de renderizado
     }
     else
     {
-        std::cerr << "Unknown command: " << command << std::endl;
+        std::cerr << "Command not recognized" << std::endl;
     }
 }

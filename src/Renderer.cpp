@@ -19,6 +19,9 @@ void renderScene()
     // Este método ahora solo llama a la figura específica según el comando
     extern std::string currentCommand;
 
+    // Clear the buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     if (currentCommand == "triangle")
     {
         drawTriangle2D();
@@ -39,6 +42,11 @@ void renderScene()
 
 void drawTriangle2D()
 {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-1, 1, -1, 1, -1, 1); // Proyección ortogonal
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     glBegin(GL_TRIANGLES);       // Iniciar el modo de dibujo para triángulos
     glColor3f(1.0f, 0.0f, 0.0f); // Rojo
     glVertex2f(-0.5f, -0.5f);
@@ -75,5 +83,8 @@ void drawCube3D()
     glVertex3f(0.5f, -0.5f, -0.5f);
     glVertex3f(0.5f, 0.5f, -0.5f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
+
+    // Otras caras se agregan similarmente
+
     glEnd();
 }

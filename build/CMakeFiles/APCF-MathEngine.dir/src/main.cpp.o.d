@@ -1,4 +1,4 @@
-src/CMakeFiles/src_lib.dir/main.cpp.o: \
+CMakeFiles/APCF-MathEngine.dir/src/main.cpp.o: \
  /home/andert/Trabajo/APCF-MathEngine/src/main.cpp \
  /usr/include/stdc-predef.h /usr/include/GL/glew.h \
  /usr/include/c++/13/cstddef \

@@ -15,6 +15,11 @@ void setupUI()
 {
     const char *glsl_version = "#version 130";
     glfwInit();
+    if (!glfwInit())
+    {
+        std::cerr << "Failed to initialize GLFW" << std::endl;
+        return;
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -23,11 +28,24 @@ void setupUI()
     if (!window)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
         return;
     }
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Habilitar VSync
+
+    // Inicializa GLEW para obtener las funciones de OpenGL
+
+    glewExperimental = GL_TRUE;
+    if (glewInit() != GLEW_OK)
+    {
+        std::cerr << "Failed to initialize GLEW" << std::endl;
+        return;
+    }
+
+    // Depuracion
+    std::cout << "OpenGL initialized successfully!" << std::endl;
 
     // Inicializar ImGui
     IMGUI_CHECKVERSION();
@@ -36,7 +54,7 @@ void setupUI()
     (void)io;
 
     // Habilitar Docking
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // Habilitar Docking
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     ImGui::StyleColorsDark(); // Estilo básico
 
@@ -89,16 +107,6 @@ void renderUI()
                 }
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Edit"))
-            {
-                if (ImGui::MenuItem("Undo", "Ctrl+Z"))
-                { /* Deshacer */
-                }
-                if (ImGui::MenuItem("Redo", "Ctrl+Y"))
-                { /* Rehacer */
-                }
-                ImGui::EndMenu();
-            }
             ImGui::EndMenuBar();
         }
 
@@ -106,7 +114,12 @@ void renderUI()
         ImGui::SetNextWindowSize(ImVec2(1024, 600), ImGuiCond_FirstUseEver); // Tamaño inicial
         if (ImGui::Begin("Viewport"))
         {
-            renderScene(); // Llama a la lógica de renderizado
+            // Llama a la lógica de renderizado y pasa el viewport
+            int display_w, display_h;
+            glfwGetFramebufferSize(window, &display_w, &display_h);
+            glViewport(0, 0, display_w, display_h);
+
+            renderScene();
         }
         ImGui::End();
 
@@ -114,7 +127,6 @@ void renderUI()
         if (ImGui::Begin("Tools", NULL))
         {
             ImGui::Text("Herramientas futuras");
-            // Aquí puedes agregar botones y opciones para herramientas futuras
         }
         ImGui::End();
 
@@ -137,12 +149,7 @@ void renderUI()
 
         // Renderizar frame
         ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
     }
@@ -163,3 +170,21 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
+/*
+
+ git clone https://github.com/ArashPartow/exprtk.git exprtk
+ git clone https://github.com/ocornut/imgui.git --branch docking
+
+ imgui cmakelists.txt:
+ cmake_minimum_required(VERSION 3.10)
+project(imgui)
+
+file(GLOB IMGUI_SOURCES *.cpp backends/imgui_impl_glfw.cpp backends/imgui_impl_opengl3.cpp)
+
+add_library(imgui STATIC ${IMGUI_SOURCES})
+
+target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/backends)
+
+
+*/
